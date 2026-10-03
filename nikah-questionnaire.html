@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikah — Profile Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#174d3b; --green2:#236a51; --mint:#eaf4ef; --gold:#c9a45b;
+  --ink:#18221e; --muted:#6c7772; --line:#dfe7e2; --bg:#f7f9f7;
+  --white:#fff; --danger:#b84b4b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+.sidebar{width:270px;background:#fff;border-right:1px solid var(--line);padding:32px 22px;position:fixed;inset:0 auto 0 0;z-index:5}
+.brand{font-family:"Playfair Display",serif;font-size:28px;color:var(--green);margin-bottom:38px}
+.brand span{color:var(--gold)}
+.side-title{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin:0 0 14px}
+.steps{display:grid;gap:5px}
+.step{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:#89928e;font-size:14px}
+.step .num{width:27px;height:27px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:12px;flex:none}
+.step.active{background:var(--mint);color:var(--green);font-weight:600}
+.step.active .num{background:var(--green);border-color:var(--green);color:#fff}
+.step.done{color:var(--green)}
+.step.done .num{background:#d8ebe3;border-color:#d8ebe3;color:var(--green)}
+.main{width:100%;margin-left:270px}
+.top{padding:28px 7vw 0;max-width:1120px;margin:auto}
+.progress-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:9px}
+.progress{height:5px;background:#e4ebe7;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green);border-radius:99px;width:0;transition:.35s}
+.content{max-width:900px;margin:50px auto;padding:0 28px 80px}
+.welcome{text-align:center;max-width:700px;margin:70px auto}
+.eyebrow{color:var(--green2);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+h1{font-family:"Playfair Display",serif;font-size:48px;line-height:1.08;margin:12px 0 18px}
+h2{font-family:"Playfair Display",serif;font-size:34px;margin:8px 0 10px}
+.subtitle{color:var(--muted);font-size:16px;line-height:1.7}
+.privacy{display:inline-flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:10px;color:#5d6963;font-size:13px;margin:22px 0}
+.btn{border:0;border-radius:12px;padding:14px 22px;font-weight:700;transition:.2s}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:#103d2f;transform:translateY(-1px)}
+.btn.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.question-wrap{display:none}
+.question-wrap.active{display:block}
+.question-count{font-size:13px;color:var(--green2);font-weight:700;margin-bottom:10px}
+.question-help{color:var(--muted);font-size:14px;margin-top:8px}
+.option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:28px}
+.option{position:relative}
+.option input{position:absolute;opacity:0}
+.option label{display:block;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:16px 17px;cursor:pointer;transition:.18s;min-height:56px}
+.option label:hover{border-color:#9bb9aa}
+.option input:checked+label{border-color:var(--green);background:var(--mint);box-shadow:0 0 0 1px var(--green) inset;color:var(--green);font-weight:600}
+.field{margin-top:25px}
+label.field-label{display:block;font-weight:600;font-size:14px;margin-bottom:9px}
+input[type=text],input[type=date],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:15px 16px;outline:none;color:var(--ink)}
+input:focus,textarea:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px #e5f0eb}
+textarea{min-height:145px;resize:vertical}
+.scale{display:flex;gap:9px;margin-top:26px}
+.scale button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:15px 8px;color:#56625c}
+.scale button.selected{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.scale-desc{display:flex;justify-content:space-between;color:#8a938f;font-size:12px;margin-top:8px}
+.tag-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:25px}
+.tag{position:relative}
+.tag input{position:absolute;opacity:0}
+.tag label{display:block;border:1.5px solid var(--line);background:#fff;padding:11px 15px;border-radius:99px;cursor:pointer;font-size:14px}
+.tag input:checked+label{background:var(--mint);border-color:var(--green);color:var(--green);font-weight:600}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:42px;padding-top:22px;border-top:1px solid var(--line)}
+.nav-right{display:flex;gap:10px}
+.error{color:var(--danger);font-size:13px;margin-top:12px;display:none}
+.review{display:grid;gap:12px;margin-top:28px}
+.review-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.review-card strong{display:block;margin-bottom:7px}
+.review-card span{color:var(--muted);font-size:14px}
+.done{text-align:center;padding:45px 0}
+.check{width:70px;height:70px;border-radius:50%;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:34px;margin:0 auto 20px}
+.toast{position:fixed;bottom:24px;right:24px;background:#18221e;color:#fff;padding:12px 17px;border-radius:10px;font-size:13px;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+@media(max-width:850px){
+ .sidebar{display:none}.main{margin-left:0}.top{padding:20px 20px 0}.content{margin:35px auto;padding:0 20px 60px}
+ h1{font-size:38px}h2{font-size:29px}.option-grid{grid-template-columns:1fr}
+ .nav{position:sticky;bottom:0;background:rgba(247,249,247,.95);padding:15px 0;border-top:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">nikah<span>.</span></div>
+  <p class="side-title">Your profile</p>
+  <div class="steps" id="steps"></div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div class="progress-meta"><span id="progressText">Let's begin</span><span id="progressPercent">0%</span></div>
+    <div class="progress"><i id="progressBar"></i></div>
+  </div>
+  <section class="content" id="content"></section>
+</main>
+</div>
+<div class="toast" id="toast">Progress saved</div>
+
+<script>
+const sections = [
+ "Welcome","Basic Information","Education & Career","Marriage Intentions",
+ "Religion & Deen","Personality","Values","Family","Lifestyle",
+ "Finance","Children & Parenting","Communication","Partner Preferences",
+ "Deal Breakers","About You","Review"
+];
+
+const questions = [
+ {id:"gender",section:1,title:"What is your gender?",type:"single",required:true,options:["Male","Female"]},
+ {id:"dob",section:1,title:"What is your date of birth?",type:"date",required:true},
+ {id:"city",section:1,title:"Where do you currently live?",type:"text",required:true,placeholder:"e.g. Dhaka, Bangladesh"},
+ {id:"marital",section:1,title:"What is your marital status?",type:"single",required:true,options:["Never married","Divorced","Widowed","Separated"]},
+
+ {id:"education",section:2,title:"What is your highest level of education?",type:"single",required:true,options:["Secondary","Higher Secondary","Diploma","Bachelor's","Master's","MPhil","PhD","Other"]},
+ {id:"study",section:2,title:"What did you study?",type:"text",placeholder:"e.g. Computer Science, Accounting, Medicine"},
+ {id:"institution",section:2,title:"Which university or institution did you attend?",type:"text",placeholder:"University / institution"},
+ {id:"career",section:2,title:"What best describes your current situation?",type:"single",options:["Student","Employed","Self-employed","Entrepreneur","Government employee","Freelancer","Homemaker","Looking for work","Other"]},
+ {id:"profession",section:2,title:"What is your profession or field?",type:"text",placeholder:"e.g. Software Engineer"},
+
+ {id:"marriage_reason",section:3,title:"Why are you joining this platform?",type:"single",required:true,options:["Looking for marriage","Looking for a serious relationship leading to marriage","Exploring suitable matches","Family-assisted matchmaking"]},
+ {id:"marriage_timeline",section:3,title:"When would you ideally like to get married?",type:"single",required:true,options:["As soon as I find the right person","Within 6 months","Within 1 year","Within 2–3 years","More than 3 years","I'm not sure yet"]},
+ {id:"family_involvement",section:3,title:"How involved should families be in the marriage process?",type:"single",options:["Very involved","Moderately involved","Involved when necessary","Mostly couple-led","I'm flexible"]},
+
+ {id:"religion_importance",section:4,title:"How important is religion in your marriage?",type:"scale",required:true},
+ {id:"salah",section:4,title:"How often do you perform Salah?",type:"single",options:["Five times daily","Usually five times","Sometimes","Occasionally","Currently working toward consistency","Prefer not to say"]},
+ {id:"spouse_salah",section:4,title:"How important is regular Salah in a future spouse?",type:"scale"},
+ {id:"quran",section:4,title:"How important is Quran reading or study in your family life?",type:"scale"},
+ {id:"islamic_children",section:4,title:"How important is raising children with Islamic values?",type:"scale"},
+ {id:"deen_values",section:4,title:"Which qualities matter most to you in religious compatibility?",type:"multi",max:5,options:["Salah","Quran","Islamic knowledge","Modesty","Halal income","Islamic family environment","Good character","Charity","Mosque/community involvement","Religious education"]},
+
+ {id:"stress",section:5,title:"After a stressful day, what do you usually prefer?",type:"single",options:["Talk to someone","Spend time alone","Pray / reflect","Distract myself","Solve the problem immediately","Sleep / rest"]},
+ {id:"social",section:5,title:"At a social event, you usually...",type:"single",options:["Talk to everyone","Talk mostly to people I know","Prefer small groups","Prefer one-to-one conversations","Mostly observe"]},
+ {id:"personality",section:5,title:"How would you describe yourself?",type:"multi",max:3,options:["Calm","Ambitious","Friendly","Introverted","Extroverted","Family-oriented","Adventurous","Practical","Emotional","Organized","Flexible","Independent","Caring","Funny","Reserved"]},
+ {id:"space",section:5,title:"How important is personal space in a marriage?",type:"scale"},
+
+ {id:"values",section:6,title:"Select your top 5 values.",type:"multi",required:true,max:5,options:["Faith","Family","Honesty","Respect","Loyalty","Career","Financial stability","Education","Personal growth","Freedom","Security","Kindness","Children","Community","Adventure","Simplicity"]},
+ {id:"top_value",section:6,title:"Which value matters most to you?",type:"text",placeholder:"e.g. Family, faith, honesty"},
+ {id:"value_why",section:6,title:"Why is this important to you?",type:"text",placeholder:"A short explanation"},
+
+ {id:"family_close",section:7,title:"How close are you to your family?",type:"scale"},
+ {id:"parents_living",section:7,title:"Would you consider living with your parents or in-laws after marriage?",type:"single",options:["Yes","No","Maybe","Depends on circumstances"]},
+ {id:"living",section:7,title:"What living arrangement would you prefer?",type:"single",options:["Independent home","With parents","Near parents","Same city as parents","Flexible"]},
+ {id:"parent_decisions",section:7,title:"How much involvement should parents have in marital decisions?",type:"scale"},
+
+ {id:"lifestyle",section:8,title:"How would you describe your lifestyle?",type:"multi",max:5,options:["Simple","Social","Career-focused","Religious","Fitness-focused","Travel-oriented","Home-oriented","Luxury-oriented","Minimalist","Business-focused","Academic","Creative"]},
+ {id:"weekend",section:8,title:"Your ideal weekend would be...",type:"single",options:["Staying home","Visiting family","Traveling","Spending time with friends","Religious activities","Sports / fitness","Studying / working","A combination"]},
+ {id:"cleanliness",section:8,title:"How important is cleanliness and organization?",type:"scale"},
+ {id:"travel",section:8,title:"How often do you like to travel?",type:"single",options:["Rarely","A few times a year","Frequently","Whenever possible"]},
+
+ {id:"finance_personality",section:9,title:"Which best describes your financial personality?",type:"single",options:["Saver","Spender","Investor","Entrepreneur","Balanced","Depends on circumstances"]},
+ {id:"financial_stability",section:9,title:"How important is financial stability in marriage?",type:"scale"},
+ {id:"financial_decisions",section:9,title:"How should major financial decisions be made?",type:"single",options:["Husband decides","Wife decides","Jointly","Depends on the decision"]},
+
+ {id:"children",section:10,title:"Do you want children?",type:"single",options:["Yes","No","Maybe","Not sure"]},
+ {id:"number_children",section:10,title:"Approximately how many children would you ideally like?",type:"single",showIf:a=>a.children==="Yes",options:["1","2","3","4+","I'm flexible"]},
+ {id:"religious_education",section:10,title:"How important is religious education for your future children?",type:"scale",showIf:a=>a.children!=="No"},
+ {id:"childcare",section:10,title:"How should childcare responsibilities be divided?",type:"single",options:["Mostly husband","Mostly wife","Equally","Based on circumstances","Flexible"]},
+ {id:"parent_goal",section:10,title:"What kind of parent do you hope to become?",type:"long",placeholder:"Tell us about the environment you want to create for your children."},
+
+ {id:"bother",section:11,title:"When something bothers you, what do you usually do?",type:"single",options:["Discuss it immediately","Take some time and then discuss","Write / message about it","Ask someone for advice","Keep it to myself","Depends on the situation"]},
+ {id:"emotional",section:11,title:"How important is emotional openness?",type:"scale"},
+ {id:"quality_time",section:11,title:"How often would you like to spend quality time with your spouse?",type:"single",options:["Daily","Several times a week","A few times a week","Flexible","Depends on work / life"]},
+ {id:"conflict",section:11,title:"You and your spouse strongly disagree about an important decision. What would you prefer?",type:"single",options:["Discuss privately and calmly","Take some time before discussing","Ask a trusted family member","Seek religious guidance","Seek professional counseling","Find a compromise","Depends on the situation"]},
+
+ {id:"partner_age",section:12,title:"What age range would you prefer in a partner?",type:"text",placeholder:"e.g. 23–30"},
+ {id:"partner_location",section:12,title:"Where would you prefer your future spouse to live?",type:"text",placeholder:"e.g. Dhaka, anywhere in Bangladesh, open to abroad"},
+ {id:"partner_education",section:12,title:"What level of education would you prefer?",type:"multi",options:["Secondary","Higher Secondary","Diploma","Bachelor's","Master's","MPhil","PhD","No specific preference"]},
+ {id:"partner_religion",section:12,title:"How important is religious compatibility?",type:"scale"},
+ {id:"relocate",section:12,title:"Would you relocate for your spouse's career or family?",type:"single",options:["Yes","No","Maybe","Depends on circumstances"]},
+
+ {id:"dealbreakers",section:13,title:"What are your genuine non-negotiables?",type:"multi",options:["Smoking","Alcohol / substance use","Children preference","Marriage intention","Religious compatibility","Relocation","Living arrangement","Career after marriage","Family involvement","Marital status","Other"]},
+ {id:"dealbreaker_detail",section:13,title:"Tell us a little more about your most important non-negotiable.",type:"long",placeholder:"Optional. Be specific but respectful."},
+
+ {id:"ideal_day",section:14,title:"My ideal day is...",type:"long",placeholder:"Describe your ideal day in a few sentences."},
+ {id:"family_describe",section:14,title:"My family would describe me as...",type:"text",placeholder:"e.g. calm, responsible and caring"},
+ {id:"goal",section:14,title:"One thing I am currently working toward is...",type:"text",placeholder:"A personal, family, education or career goal"},
+ {id:"understand",section:14,title:"Something I want my future spouse to understand about me is...",type:"long",placeholder:"Share something meaningful about yourself."},
+ {id:"marriage_build",section:14,title:"What kind of marriage are you hoping to build?",type:"long",placeholder:"What do you want your future home and relationship to feel like?"}
+];
+
+let answers = JSON.parse(localStorage.getItem("nikahProfile") || "{}");
+let current = -1;
+
+function toast(msg="Progress saved"){
+  const t=document.getElementById("toast"); t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
+}
+function save(){localStorage.setItem("nikahProfile",JSON.stringify(answers));}
+function visibleQuestions(){return questions.filter(q=>!q.showIf || q.showIf(answers));}
+function renderSteps(){
+  document.getElementById("steps").innerHTML=sections.slice(1,-1).map((s,i)=>{
+    const n=i+1, active=current>=0 ? Math.min(Math.ceil((current+1)/Math.max(1,visibleQuestions().length)*14),14) : 0;
+    return `<div class="step ${n===active?'active':''} ${n<active?'done':''}"><span class="num">${n}</span>${s}</div>`;
+  }).join("");
+}
+function updateProgress(){
+  const qs=visibleQuestions();
+  const pct=current<0?0:Math.round(((current+1)/qs.length)*100);
+  document.getElementById("progressBar").style.width=pct+"%";
+  document.getElementById("progressPercent").textContent=pct+"%";
+  document.getElementById("progressText").textContent=current<0?"Let's begin":`Question ${current+1} of ${qs.length}`;
+  renderSteps();
+}
+function inputFor(q){
+  const val=answers[q.id];
+  if(q.type==="text") return `<div class="field"><input id="input_${q.id}" type="text" value="${esc(val||"")}" placeholder="${esc(q.placeholder||"")}"></div>`;
+  if(q.type==="date") return `<div class="field"><input id="input_${q.id}" type="date" value="${esc(val||"")}"></div>`;
+  if(q.type==="long") return `<div class="field"><textarea id="input_${q.id}" maxlength="1000" placeholder="${esc(q.placeholder||"")}">${esc(val||"")}</textarea><div class="question-help">Maximum 1000 characters.</div></div>`;
+  if(q.type==="single") return `<div class="option-grid">${q.options.map((o,i)=>`<div class="option"><input type="radio" name="${q.id}" id="${q.id}_${i}" value="${esc(o)}" ${val===o?"checked":""}><label for="${q.id}_${i}">${o}</label></div>`).join("")}</div>`;
+  if(q.type==="multi") {
+    const arr=Array.isArray(val)?val:[];
+    return `<div class="tag-grid">${q.options.map((o,i)=>`<div class="tag"><input type="checkbox" data-multi="${q.id}" id="${q.id}_${i}" value="${esc(o)}" ${arr.includes(o)?"checked":""}><label for="${q.id}_${i}">${o}</label></div>`).join("")}</div>`;
+  }
+  if(q.type==="scale") {
+    const n=Number(val||0);
+    return `<div class="scale">${[1,2,3,4,5].map(x=>`<button type="button" data-scale="${q.id}" data-value="${x}" class="${n===x?"selected":""}">${x}</button>`).join("")}</div><div class="scale-desc"><span>Not important</span><span>Extremely important</span></div>`;
+  }
+}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function render(){
+  updateProgress();
+  const content=document.getElementById("content");
+  if(current===-1){
+    content.innerHTML=`<div class="welcome">
+      <div class="eyebrow">Welcome to nikah</div>
+      <h1>Let's get to know you.</h1>
+      <p class="subtitle">Your answers help us understand your values, lifestyle, expectations and what you're looking for in a life partner.</p>
+      <div class="privacy">🔒 Your answers are private and you control what appears on your profile.</div>
+      <p class="question-help">This takes about 10–15 minutes.</p>
+      <br><button class="btn primary" onclick="start()">Let's Begin →</button>
+    </div>`;
+    return;
+  }
+  const qs=visibleQuestions();
+  if(current>=qs.length){renderReview();return;}
+  const q=qs[current];
+  content.innerHTML=`<div class="question-wrap active">
+    <div class="question-count">${String(current+1).padStart(2,"0")} / ${qs.length}</div>
+    <h2>${q.title}</h2>
+    ${q.type==="multi"?`<div class="question-help">Choose up to ${q.max||"as many as you like"}.</div>`:""}
+    ${inputFor(q)}
+    <div class="error" id="error">Please answer this question before continuing.</div>
+    <div class="nav">
+      <button class="btn secondary" onclick="prev()">← Back</button>
+      <div class="nav-right">
+        <button class="btn secondary" onclick="skip()">Skip</button>
+        <button class="btn primary" onclick="next()">Continue →</button>
+      </div>
+    </div>
+  </div>`;
+  document.querySelectorAll(`[data-scale="${q.id}"]`).forEach(b=>b.onclick=()=>{
+    document.querySelectorAll(`[data-scale="${q.id}"]`).forEach(x=>x.classList.remove("selected"));
+    b.classList.add("selected"); answers[q.id]=Number(b.dataset.value); save();
+  });
+  document.querySelectorAll(`[data-multi="${q.id}"]`).forEach(c=>c.onchange=()=>{
+    const selected=[...document.querySelectorAll(`[data-multi="${q.id}"]:checked`)].map(x=>x.value);
+    if(q.max && selected.length>q.max){c.checked=false;toast(`Choose up to ${q.max}`);return}
+    answers[q.id]=selected;save();
+  });
+}
+function start(){current=0;render()}
+function collect(q){
+  if(["text","date","long"].includes(q.type)){
+    const el=document.getElementById("input_"+q.id);
+    answers[q.id]=el?el.value.trim():"";
+  } else if(q.type==="single"){
+    const el=document.querySelector(`input[name="${q.id}"]:checked`);
+    answers[q.id]=el?el.value:"";
+  }
+  save();
+}
+function valid(q){
+  if(!q.required)return true;
+  const v=answers[q.id];
+  if(q.type==="multi")return Array.isArray(v)&&v.length>0;
+  if(q.type==="scale")return Number(v)>0;
+  return v!==undefined && String(v).trim()!=="";
+}
+function next(){
+  const qs=visibleQuestions(),q=qs[current]; collect(q);
+  if(!valid(q)){document.getElementById("error").style.display="block";return}
+  current++;render();
+}
+function skip(){current++;render()}
+function prev(){if(current>0){current--;render()}else{current=-1;render()}}
+function renderReview(){
+  document.getElementById("progressBar").style.width="100%";
+  document.getElementById("progressPercent").textContent="100%";
+  document.getElementById("progressText").textContent="Profile ready to review";
+  document.getElementById("steps").innerHTML=sections.slice(1,-1).map((s,i)=>`<div class="step done"><span class="num">✓</span>${s}</div>`).join("");
+  const labels={gender:"Gender",dob:"Date of birth",city:"Location",marital:"Marital status",education:"Education",career:"Current situation",marriage_reason:"Marriage intention",marriage_timeline:"Marriage timeline",religion_importance:"Importance of religion",children:"Children",living:"Preferred living arrangement",financial_stability:"Financial stability",emotional:"Emotional openness",partner_age:"Preferred partner age",dealbreakers:"Non-negotiables"};
+  const items=Object.entries(labels).filter(([id])=>answers[id]!==undefined&&answers[id]!=="").map(([id,l])=>`<div class="review-card"><strong>${l}</strong><span>${Array.isArray(answers[id])?answers[id].join(", "):esc(answers[id])}</span></div>`).join("");
+  document.getElementById("content").innerHTML=`<div class="done">
+    <div class="eyebrow">Almost there</div><h1>Your profile is ready.</h1>
+    <p class="subtitle">Review your answers below. You can go back and change anything before completing your profile.</p>
+    <div class="review">${items}</div>
+    <div class="nav">
+      <button class="btn secondary" onclick="prev()">← Back</button>
+      <button class="btn primary" onclick="complete()">Complete My Profile ✓</button>
+    </div>
+  </div>`;
+}
+function complete(){
+  save();
+  document.getElementById("content").innerHTML=`<div class="done">
+    <div class="check">✓</div>
+    <div class="eyebrow">Profile complete</div>
+    <h1>You're ready to explore.</h1>
+    <p class="subtitle">Your questionnaire has been saved. The next step can connect this profile to the AI matching system.</p>
+    <br><button class="btn primary" onclick="alert('AI matching page placeholder')">Explore My Matches →</button>
+  </div>`;
+}
+render();
+</script>
+</body>
+</html>
